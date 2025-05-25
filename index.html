@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>For: Skibidi</title>
+<style>
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: #1c1c1c;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    user-select: none;
+    overflow: hidden;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: 3rem;
+    margin-bottom: 15px;
+    letter-spacing: 0.03em;
+    color: #ddd;
+  }
+  input {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    padding: 12px 16px;
+    width: 300px;
+    max-width: 90vw;
+    border: none;
+    border-bottom: 2px solid #555;
+    background: transparent;
+    color: #eee;
+    outline: none;
+    transition: border-color 0.3s ease;
+    text-align: center;
+  }
+  input:focus {
+    border-color: #999;
+  }
+  .message {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-top: 40px;
+    max-width: 80vw;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+    color: #bbb;
+    user-select: text;
+  }
+  .message.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #reasonsContainer {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    color: #eee;
+    font-family: 'Playfair Display', serif;
+    max-width: 90vw;
+  }
+  #reasonBox {
+    font-size: 1.5rem;
+    max-width: 80%;
+    line-height: 1.6;
+    min-height: 80px;
+    transition: opacity 0.5s ease;
+    color: #ddd;
+    margin-bottom: 40px;
+  }
+
+  /* Updated cat button below reasons, centered and bigger */
+  #catButton {
+    width: 150px;
+    margin: 20px auto 40px auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    user-select: none;
+    display: block;
+  }
+  #catButton:hover {
+    transform: scale(1.1);
+  }
+
+  /* Poetry, Letter, Final screens and fade overlay */
+  #fadeScreen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1c1c1c;
+    opacity: 0;
+    z-index: 9998;
+    pointer-events: none;
+    transition: opacity 2s ease;
+  }
+  #poetryPage, #letterPage, #finalMessage {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1c1c1c;
+    color: #ccc;
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    padding: 30px;
+    font-size: 1.4rem;
+    line-height: 1.8;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  #poetryPage.show, #letterPage.show, #finalMessage.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #finalMessage p {
+    font-size: 3rem;
+    margin: 0.5rem 0;
+  }
+  #finalMessage p small {
+    font-size: 1.5rem;
+    color: #aaa;
+  }
+
+  /* Cat button for poem and letter pages, fixed bottom-right with margin */
+  #catButtonPoem {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 120px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    user-select: none;
+    z-index: 10000;
+  }
+  #catButtonPoem:hover {
+    transform: scale(1.15);
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 2rem;
+    }
+    #reasonBox {
+      font-size: 1.2rem;
+      max-width: 90vw;
+      min-height: 60px;
+    }
+    #catButton {
+      width: 120px;
+      margin-bottom: 30px;
+    }
+    #catButtonPoem {
+      width: 100px;
+      bottom: 15px;
+      right: 15px;
+    }
+    input {
+      font-size: 16px;
+      width: 90vw;
+    }
+    .message {
+      font-size: 1.2rem;
+      max-width: 90vw;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="nameSection">
+    <h1>Your name:</h1>
+    <input type="text" id="nameInput" placeholder="Type your name..." autocomplete="off" />
+  </div>
+
+  <div class="message" id="loveMessage">Moving on from you would be the biggest mistake of my life...</div>
+
+  <div id="reasonsContainer">
+    <h1>100 Reasons Why I Love You</h1>
+    <div id="reasonBox">Click the meow 🐾</div>
+    <img id="catButton" src="assets/cat.png" alt="Click Me Cat" />
+  </div>
+
+  <div id="fadeScreen"></div>
+
+  <div id="poetryPage">
+    <div>
+      <p>You were the poem in my life,</p>
+      <p>The verse i didn't know i needed,</p>
+      <p>You look beautiful just like the moon,</p>
+      <p>Calm and steady in the quiet night,</p>
+      <br />
+      <p>These 100 reasons, they barely show</p>
+      <p>The depth of love you'll never know.</p>
+      <p>For every glance and every touch,</p>
+      <p>I love you endlessly, far too much.</p>
+      <br />
+      <p>So when you doubt, just read this through,</p>
+      <p>And know my heart belongs to you.</p>
+    </div>
+    <img id="catButtonPoem" src="assets/cat.png" alt="Cat Button" />
+  </div>
+
+  <!-- Letter page -->
+  <div id="letterPage">
+    <div>
+      <p>Dear Esther Grace,</p>
+      <p>This letter is a small reflection of my heart.</p>
+      <p>Every word I write is filled with love and hope.</p>
+      <p>I hope this shows how much I love you, You mean the world to me, absolutely.</p>
+      <p>You are the skibidi to my toilet, Kumalala to my Savesta,</p>
+      <p>And alpha to my sigma, You are also the moon when my world gets darker,</p>
+      <p>My love for you is infinite, I hope no one will beats it. But I also hope someone will treats you better than me, </p>
+      <p>That is all from me. </p>
+      <br />
+      <p>From,</p>
+      <p><em>Reya the rizzler</em></p>
+    </div>
+    <img id="catButtonPoem" src="assets/cat.png" alt="Cat Button" />
+  </div>
+
+  <!-- Final message -->
+  <div id="finalMessage">
+    <p>The End</p>
+    <p><small>PS: I Love You</small></p>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" src="assets/johnwayne.mp3" loop></audio>
+
+<script>
+  const input = document.getElementById("nameInput");
+  const nameSection = document.getElementById("nameSection");
+  const message = document.getElementById("loveMessage");
+  const reasonsContainer = document.getElementById("reasonsContainer");
+  const reasonBox = document.getElementById("reasonBox");
+  const cat = document.getElementById("catButton");
+  const fadeScreen = document.getElementById("fadeScreen");
+  const poetryPage = document.getElementById("poetryPage");
+  const letterPage = document.getElementById("letterPage");
+  const finalMessage = document.getElementById("finalMessage");
+  const bgMusic = document.getElementById("bgMusic");
+  const catPoemButtons = document.querySelectorAll("#catButtonPoem");
+
+  const reasons = [
+    "your smile obviously",
+    "your beautiful eyes",
+    "your dimples",
+    "your silky hair",
+    "your name",
+    "the way you understands me",
+    "the way you dont judge me",
+    "you are nice to everyone",
+    "you are smart",
+    "your patience",
+    "your favourite colour",
+    "your eyes when you smile",
+    "the way you would come to me when i cry",
+    "you care for me",
+    "you are beautiful",
+    "the way you make me laugh",
+    "your style",
+    "the way you framed your beautiful eyes",
+    "how you look at me",
+    "the way you talk",
+    "your presence",
+    "your intelligence",
+    "your loyalty",
+    "your common sense",
+    "we clicked on so many things",
+    "you are supportive",
+    "your looks when you wear glasses",
+    "our eye contacts",
+    "your kindness",
+    "your affection",
+    "your humour",
+    "you are understanding",
+    "you are observant",
+    "your heart",
+    "your soul",
+    "your sweet face",
+    "how you treat me",
+    "your laugh",
+    "your interests",
+    "your music tastes",
+    "how silly you are",
+    "how you tease me",
+    "you appreciate me",
+    "you healed something in me",
+    "you are a great swimmer",
+    "your beautiful voice",
+    "your soft skin",
+    "you made me a better person",
+    "your honesty",
+    "your weird side",
+    "you are respectful",
+    "you motivate me",
+    "you are not like others",
+    "you make everything beautiful",
+    "you are positive",
+    "your support for me",
+    "you somehow know “me”",
+    "a child of god",
+    "the way you read",
+    "you are a listener and a yapper",
+    "your handwriting",
+    "your generosity",
+    "you are thoughtful",
+    "you are athletic",
+    "you make me smile",
+    "your personality",
+    "how you yap to me",
+    "your hard work",
+    "your flaws",
+    "your perfection",
+    "you make me feel safe n comfortable",
+    "your charm",
+    "you are lovely",
+    "the way you play piano",
+    "when you compliment me",
+    "our bonds",
+    "you are the reason i am happy",
+    "the way you walk",
+    "your sarcasm",
+    "you are worthy",
+    "you are an angel",
+    "your goals",
+    "your insecurity",
+    "you are humble",
+    "you have values",
+    "your self respect",
+    "you notice me",
+    "your scent",
+    "your mindset",
+    "you give hope",
+    "you make me feel wanted",
+    "you never fail to make me laugh",
+    "you are stunning",
+    "your height",
+    "your beautiful body",
+    "the way you panic sometimes",
+    "you are dependable",
+    "your skills",
+    "your scents",
+    "you are Esther Grace."
+  ];
+
+  let reasonIndex = 0;
+
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && input.value.trim() !== "") {
+      input.disabled = true;
+      nameSection.style.display = "none";
+      message.classList.add("show");
+
+      // Play background music after user interaction
+      if (bgMusic) {
+        bgMusic.play().catch(() => {
+          console.log("Music playback prevented by browser autoplay policy.");
+        });
+      }
+
+      setTimeout(() => {
+        message.classList.remove("show");
+        reasonsContainer.style.display = "flex";
+      }, 4000);
+    }
+  });
+
+  cat.addEventListener("click", () => {
+    if (reasonIndex < reasons.length) {
+      reasonBox.textContent = reasons[reasonIndex];
+      reasonIndex++;
+    } else {
+      reasonBox.textContent = "That's just the beginning. I have infinite reasons ♡";
+      cat.style.display = "none";
+
+      setTimeout(() => {
+        fadeScreen.style.display = "block";
+        fadeScreen.style.pointerEvents = "auto";
+        setTimeout(() => {
+          fadeScreen.style.opacity = 1;
+        }, 100);
+
+        setTimeout(() => {
+          reasonsContainer.style.display = "none";
+          poetryPage.style.display = "flex";
+          setTimeout(() => {
+            poetryPage.classList.add("show");
+          }, 100);
+        }, 2500);
+      }, 3000);
+    }
+  });
+
+  catPoemButtons.forEach(catPoem => {
+    catPoem.addEventListener("click", () => {
+      if (poetryPage.classList.contains("show")) {
+        // Move from poem to letter
+        poetryPage.classList.remove("show");
+        setTimeout(() => {
+          poetryPage.style.display = "none";
+          letterPage.style.display = "flex";
+          setTimeout(() => {
+            letterPage.classList.add("show");
+          }, 50);
+        }, 1500);
+      } else if (letterPage.classList.contains("show")) {
+        // Move from letter to final message
+        letterPage.classList.remove("show");
+        setTimeout(() => {
+          letterPage.style.display = "none";
+          finalMessage.style.display = "flex";
+          finalMessage.classList.add("show");
+        }, 1500);
+      }
+    });
+  });
+</script>
+</body>
+</html>

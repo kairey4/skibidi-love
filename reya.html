@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skibidi - Page 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Playfair+Display&display=swap" rel="stylesheet" />
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+      color: #ccc;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      user-select: none;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 3rem;
+      margin-bottom: 15px;
+      letter-spacing: 0.03em;
+      color: #ddd;
+    }
+
+    input {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      padding: 12px 16px;
+      width: 300px;
+      max-width: 90vw;
+      border: none;
+      border-bottom: 2px solid #555;
+      background: transparent;
+      color: #eee;
+      outline: none;
+      transition: border-color 0.3s ease;
+      text-align: center;
+    }
+
+    input:focus {
+      border-color: #999;
+    }
+
+    .message {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-top: 40px;
+      max-width: 80vw;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1s ease, transform 1s ease;
+      color: #bbb;
+      user-select: text;
+    }
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #playHint {
+      margin-top: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #aaa;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: underline;
+      display: none;
+      transition: color 0.3s ease;
+    }
+    #playHint:hover {
+      color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your name:</h1>
+  <input type="text" id="nameInput" placeholder="Type your name..." autocomplete="off" />
+  <div class="message" id="loveMessage">Moving on from you would be the biggest mistake of my life</div>
+  <div id="playHint">Click here to start the music</div>
+
+  <audio id="bgMusic" src="johnwayne.mp3" loop></audio>
+
+  <script>
+    const input = document.getElementById("nameInput");
+    const message = document.getElementById("loveMessage");
+    const bgMusic = document.getElementById("bgMusic");
+    const playHint = document.getElementById("playHint");
+
+    // Get URL param helper
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    function tryPlayMusic() {
+      bgMusic.play().then(() => {
+        playHint.style.display = "none";
+      }).catch(() => {
+        // Show clickable hint if autoplay blocked
+        playHint.style.display = "block";
+      });
+    }
+
+    playHint.addEventListener("click", () => {
+      bgMusic.play();
+      playHint.style.display = "none";
+    });
+
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && input.value.trim() !== "") {
+        message.classList.add("show");
+        input.disabled = true;
+
+        if (getQueryParam("play") === "true") {
+          tryPlayMusic();
+        }
+      }
+    });
+
+    // If play=true param is present, listen for any interaction to try play music
+    if (getQueryParam("play") === "true") {
+      function playOnInteraction() {
+        tryPlayMusic();
+        window.removeEventListener("click", playOnInteraction);
+        window.removeEventListener("keydown", playOnInteraction);
+      }
+      window.addEventListener("click", playOnInteraction);
+      window.addEventListener("keydown", playOnInteraction);
+    }
+  </script>
+</body>
+</html>
